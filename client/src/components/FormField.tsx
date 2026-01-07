@@ -15,13 +15,17 @@ export function FormField({
   error: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) {
+  const className = error
+    ? "rounded-lg border border-red-800 bg-neutral-900 p-2 transition outline-none hover:border-red-700 focus:border-red-600 focus:ring-2 focus:ring-red-600"
+    : "rounded-lg border border-neutral-800 bg-neutral-900 p-2 transition outline-none hover:border-neutral-700 focus:border-neutral-600 focus:ring-2 focus:ring-red-600";
+
   return (
     <div className="flex flex-col gap-2">
       <div>
         <label htmlFor={id} className="font-semibold">
           {label}
         </label>
-        {error && <p className="text-sm text-red-600">{error}</p>}
+        {error && <p className="text-sm text-red-500">{error}</p>}
       </div>
       <input
         name={name}
@@ -29,7 +33,7 @@ export function FormField({
         value={value}
         onChange={onChange}
         required
-        className="rounded-lg border border-neutral-800 bg-neutral-900 p-2 transition outline-none hover:border-neutral-700 focus:border-neutral-600 focus:ring-2 focus:ring-red-600"
+        className={className}
       />
     </div>
   );

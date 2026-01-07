@@ -1,7 +1,7 @@
 import * as z from "zod";
 
 export const UserLogin = z.object({
-  email: z.email("Insert a valid e-mail."),
+  email: z.email("Insert a valid e-mail address."),
   password: z
     .string()
     .min(1, "Insert a password.")

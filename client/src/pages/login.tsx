@@ -4,18 +4,49 @@ import { Link } from "react-router";
 import { UserLogin, type UserLoginType, DEFAULT_USER_LOGIN } from "../schemas";
 import { FormField } from "../components/FormField";
 
+import * as z from "zod";
+
 export function Login() {
-  const [formData, setFormData] = useState<UserLoginType>(DEFAULT_USER_LOGIN);
-  const [formError, setFormError] = useState<UserLoginType>(DEFAULT_USER_LOGIN);
+  const [formData, setFormData] = useState<UserLoginType>({
+    ...DEFAULT_USER_LOGIN,
+  });
+  const [formError, setFormError] = useState<UserLoginType>({
+    ...DEFAULT_USER_LOGIN,
+  });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const rawFormData = new FormData(e.currentTarget);
+    const newFormData: UserLoginType = Object.fromEntries(
+      rawFormData.entries(),
+    ) as UserLoginType;
+
+    const newFormError = { ...DEFAULT_USER_LOGIN };
+
+    try {
+      UserLogin.parse(newFormData);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        for (const e of error.issues) {
+          newFormError[e.path[0] as keyof UserLoginType] = e.message;
+        }
+      }
+    }
+
+    setFormError(newFormError);
+  };
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-[url(../images/jpgs/sean-pollock-PhYq704ffdA-unsplash.jpg)] bg-cover bg-center">
       <form
+        method="post"
+        onSubmit={handleSubmit}
         noValidate
         className="flex w-80 flex-col gap-6 rounded-xl border-2 border-neutral-900 bg-neutral-950 p-4 text-neutral-100 md:w-96"
       >
